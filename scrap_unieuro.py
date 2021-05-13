@@ -11,13 +11,17 @@ class Scrapper:
         req = requests.get(self.link)
         soup = BeautifulSoup(req.text, 'html.parser')
 
-        avail = soup.find('div', class_='product-availability')
-        if 'non disponibile' in avail.text.lower():
-            avail = False
-        else:
-            avail = True
+        try:
+            avail = soup.find('div', class_='product-availability').text
+        except AttributeError:
+            print('Product page not reachable')
+            return False
 
-        return avail
+        if 'non disponibile' in avail.lower():
+            return False
+        else:
+            return True
+
 
     def __str__(self):
         add = 'NOT '
